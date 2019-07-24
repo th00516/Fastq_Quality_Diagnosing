@@ -35,7 +35,7 @@ int main(int argc, const char *argv[])
     if (fs.fail())
     {
         cerr << "==== fastqQualDiagnosing_lite ===="                                   << '\n'
-             << "Version 1.1, Created by:"                                             << '\n'
+             << "Version 1.2 (2019-07-24), Created by:"                                << '\n'
              << setw(8) << "" << "Hao Yu  (yuhao@genomics.cn)"                         << '\n'
              << setw(8) << "" << "Qiye Li (liqiye@genomics.cn)"                        << '\n'
                                                                                        << '\n'
@@ -143,56 +143,75 @@ int main(int argc, const char *argv[])
     // output the conclusion
     if      (fastq.qual_33_ratio > fastq.qual_64_ratio)
     {
-        if      (fastq.qual_33_ratio >= 0.3 && fastq.qual_64_ratio <  0.0001)
+        if (fastq.qual_33_64_ratio < 0.5)
         {
-            cout << "======== Conclusion ========"  << '\n';
-            cout << "These reads may be set quality based on Illumina 1.8+ Phred+33." << '\n';
+            if      (fastq.qual_33_ratio >= 0.3 && fastq.qual_64_ratio <  0.0001)
+            {
+                cout << "======== Conclusion ========"  << '\n';
+                cout << "These reads may be set quality based on Illumina 1.8+ Phred+33." << '\n';
+                cout << endl;
+            }
+            else if (fastq.qual_33_ratio >= 0.3 && fastq.qual_64_ratio >= 0.0001)
+            {
+                cout << "======== Warning ========" << '\n';
+                cout << "Warning: Your Illumina 1.8+ Phred+33 reads may be mixed up with Illumina 1.3+ Phred+64 reads." << '\n';
+                cout << endl;
+            }
+            else if (fastq.qual_33_ratio <  0.3 && fastq.qual_64_ratio >= 0.0001)
+            {
+                cout << "======== Fatal Error ========" << '\n';
+                cout << "Warning: Your Illumina 1.8+ Phred+33 reads may be mixed up with too many Illumina 1.3+ Phred+64 reads."  << '\n'
+                     << setw(9) << ""
+                     << "I suggest you to cautiously check your FASTQ file, if too hard, you should abandon this doubtable data." << '\n';
+                cout << endl;
+            }
+        }
+        else
+        {
+            cout << "======== Conclusion ========" << '\n';
+            cout << "These reads may be set quality based on Illumina 1.8+ Phred+33 and many of them are high quality." << '\n'
             cout << endl;
         }
-        else if (fastq.qual_33_ratio >= 0.3 && fastq.qual_64_ratio >= 0.0001)
-        {
-            cout << "======== Warning ========" << '\n';
-            cout << "Warning: Your Illumina 1.8+ Phred+33 reads may be mixed up with Illumina 1.3+ Phred+64 reads." << '\n';
-            cout << endl;
-        }
-        else if (fastq.qual_33_ratio <  0.3 && fastq.qual_64_ratio >= 0.0001)
-        {
-            cout << "======== Fatal Error ========" << '\n';
-            cout << "Warning: Your Illumina 1.8+ Phred+33 reads may be mixed up with too many Illumina 1.3+ Phred+64 reads."  << '\n'
-                 << setw(9) << ""
-                 << "I suggest you to cautiously check your FASTQ file, if too hard, you should abandon this doubtable data." << '\n';
-            cout << endl;
-        }
+    
     }
     else if (fastq.qual_64_ratio > fastq.qual_33_ratio)
     {
-        if      (fastq.qual_64_ratio >= 0.3 && fastq.qual_33_ratio <  0.0001)
+        if (fastq.qual_33_64_ratio < 0.5)
         {
-            cout << "======== Conclusion ========"  << '\n';
-            cout << "These reads may be set quality based on Illumina 1.3+ Phred+64." << '\n';
-            cout << endl;
+            if      (fastq.qual_64_ratio >= 0.3 && fastq.qual_33_ratio <  0.0001)
+            {
+                cout << "======== Conclusion ========"  << '\n';
+                cout << "These reads may be set quality based on Illumina 1.3+ Phred+64." << '\n';
+                cout << endl;
+            }
+            else if (fastq.qual_64_ratio >= 0.3 && fastq.qual_33_ratio >= 0.0001)
+            {
+                cout << "======== Warning ========" << '\n';
+                cout << "Warning: Your Illumina 1.3+ Phred+64 reads may be mixed up with Illumina 1.8+ Phred+33 reads." << '\n';
+                cout << endl;
+            }
+            else if (fastq.qual_64_ratio <  0.3 && fastq.qual_33_ratio >= 0.0001)
+            {
+                cout << "======== Fatal Error ========" << '\n';
+                cout << "Warning: Your Illumina 1.3+ Phred+64 reads may be mixed up with too many Illumina 1.8+ Phred+33 reads."  << '\n'
+                     << setw(9) << ""
+                     << "I suggest you to cautiously check your FASTQ file, if too hard, you should abandon this doubtable data." << '\n';
+                cout << endl;
+            }
         }
-        else if (fastq.qual_64_ratio >= 0.3 && fastq.qual_33_ratio >= 0.0001)
+        else
         {
             cout << "======== Warning ========" << '\n';
-            cout << "Warning: Your Illumina 1.3+ Phred+64 reads may be mixed up with Illumina 1.8+ Phred+33 reads." << '\n';
-            cout << endl;
-        }
-        else if (fastq.qual_64_ratio <  0.3 && fastq.qual_33_ratio >= 0.0001)
-        {
-            cout << "======== Fatal Error ========" << '\n';
-            cout << "Warning: Your Illumina 1.3+ Phred+64 reads may be mixed up with too many Illumina 1.8+ Phred+33 reads."  << '\n'
-                 << setw(9) << ""
-                 << "I suggest you to cautiously check your FASTQ file, if too hard, you should abandon this doubtable data." << '\n';
+            cout << "These reads may be set quality based on Illumina 1.8+ Phred+33 and many of them are low quality." << '\n'
             cout << endl;
         }
     }
-    
-    if (fastq.qual_33_64_ratio > 0.5)
+    else if (fastq.qual_64_ratio == fastq.qual_33_ratio)
     {
         cout << "======== Warning ========" << '\n';
-        cout << "Too many bases are too ambiguous in your FASTQ file (QUAL_ASCII: [64 , 73])," << '\n'
-             << "this ambiguousness may obstruct your judgment." << '\n';
+        cout << "Warning: Fail in Sampling" << '\n'
+             << setw(9) << ""
+             << "I suggest change the number of sampling and run again." << '\n';
         cout << endl;
     }
     
