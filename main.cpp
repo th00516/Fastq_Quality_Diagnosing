@@ -211,7 +211,7 @@ int main(int argc, const char *argv[])
         cout << "======== Warning ========" << '\n';
         cout << "Warning: Fail in Sampling" << '\n'
              << setw(9) << ""
-             << "I suggest change the number of sampling and run again." << '\n';
+             << "I suggest you to change the number of sampling and run again." << '\n';
         cout << endl;
     }
     
