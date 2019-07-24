@@ -169,7 +169,7 @@ int main(int argc, const char *argv[])
         else
         {
             cout << "======== Conclusion ========" << '\n';
-            cout << "These reads may be set quality based on Illumina 1.8+ Phred+33 and many of them are high quality." << '\n'
+            cout << "These reads may be set quality based on Illumina 1.8+ Phred+33 and many of them are high quality." << '\n';
             cout << endl;
         }
     
@@ -202,7 +202,7 @@ int main(int argc, const char *argv[])
         else
         {
             cout << "======== Warning ========" << '\n';
-            cout << "These reads may be set quality based on Illumina 1.8+ Phred+33 and many of them are low quality." << '\n'
+            cout << "These reads may be set quality based on Illumina 1.8+ Phred+33 and many of them are low quality." << '\n';
             cout << endl;
         }
     }
