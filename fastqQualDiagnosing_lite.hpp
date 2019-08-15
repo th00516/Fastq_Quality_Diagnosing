@@ -19,7 +19,7 @@ using namespace std;
 typedef struct {
     unsigned long int all_reads;
     unsigned long int all_bases;
-         unsigned int read_len;
+    unsigned      int read_len;
     
     unsigned long int qual_33_bases;
     unsigned long int qual_33_64_bases;
